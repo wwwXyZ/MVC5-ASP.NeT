@@ -32,7 +32,9 @@ namespace WebApplication1.Controllers
                 {
                     bookModel.author = model.author;
                     bookModel.bookName = model.bookName;
-                    bookModel.price = model.price;
+                    var tmp = new float();
+                    float.TryParse(model.price.Replace('.', ','), out tmp);
+                    bookModel.price = tmp.ToString();
                     return RedirectToAction("BookList");
                 }
             }

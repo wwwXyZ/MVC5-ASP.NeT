@@ -1,0 +1,108 @@
+﻿@model IEnumerable<WebApplication1.Models.BookModels>
+
+@{
+    ViewBag.Title = "BookList";
+}
+
+<h2>BookList</h2>
+
+<p>
+    @Html.ActionLink("Create New", "AddBook")
+</p>
+<input type="text" style="border: none;" id="SearchBook" placeholder="Search" />
+<script>
+    /*
+        Array.from(document.getElementsByClassName("bookName")).forEach(function (element) {
+            element.addEventListener('click', function () {
+                alert(this.dataset.id);
+            });
+        });
+    */
+    document.getElementById("SearchBook").oninput = function () {
+        $.ajax({
+            url: "/Book/SearchBook",
+            method: "POST",
+            data: {
+                bookName: document.getElementById("SearchBook").value
+            },
+            success: function (result) {
+                //render table
+                console.log(result);
+                var html = '';
+                for (book in result) {
+                    html += '<tr id="bookTr_' + result[book].id + '"><td class="bookName">' + result[book].bookName + '</td><td>' + result[book].price + '</td><td>' + result[book].author + '</td><td><a href="/Book/EditBook?bookId=' + result[book].id + '>Edit</a> | <a href="#" onclick="deleteBook(' + result[book].id + ');">Delete</a></td></tr>';
+                }
+                console.log(html);
+                var tb = document.getElementById('bookTable');
+                tb.innerHtml = html;
+                try {
+                    // the very simplest way: tbody.innerHTML
+                    tb.innerHTML = html;
+                }
+                catch (ex) {
+                    alert('Nope: ' + ex.message);
+                    var div = document.createElement('div');
+                    try {
+                        div.innerHTML = '<table>' + html + '</table>';
+                        //            alert(div.innerHTML);
+                        for (var cn = tb.childNodes, l = cn.length, i = 0; i < l; i++) {
+                            cn[i].parentNode.removeChild(cn[i]);
+                        }
+                        for (var cn = div.firstChild.tBodies[0].childNodes, l = cn.length, i = 0; i < l; i++) {
+                            tb.appendChild(cn[i]);
+                        }
+                    }
+                    catch (ex) {
+                        alert('LOL Nope: ' + ex.message);
+                    }
+                }
+                
+            }
+        });
+    };
+    function deleteBook(bookId) {
+        //        alert("Delete " + bookId);
+        $.ajax({
+            url: "/Book/DeleteBook?bookId=" + bookId,
+            success: function (result) {
+                document.getElementById("bookTr_" + bookId).remove();
+            }
+        });
+    }
+</script>
+<table class="table">
+    <tbody id="bookTable">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.bookName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.author)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr id="bookTr_@item.id">
+                <td class="bookName">
+                    @Html.DisplayFor(modelItem => item.bookName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.author)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditBook", new { bookId = item.id }, null) |
+                    @*                @Html.ActionLink("Delete", "DeleteBook", new { bookId = item.id }, null)*@
+                    <a href="#" onclick="deleteBook(@item.id);">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

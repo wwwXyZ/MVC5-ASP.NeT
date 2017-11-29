@@ -16,9 +16,9 @@ namespace WebApplication1.Models
         public string bookName { get; set; }
         [Required(ErrorMessage = "Fill it.")]
         [Display(Name = "price")]
-//        [MinLength(5)]
-//        [MaxLength(255)]
-//        [Range(0.0, Double.MaxValue)]
+        //        [MinLength(5)]
+        //        [MaxLength(255)]
+        //        [Range(0.0, Double.MaxValue)]
         public string price { get; set; }
         [Required(ErrorMessage = "Fill it.")]
         [Display(Name = "Author")]
@@ -33,14 +33,10 @@ namespace WebApplication1.Models
                 id = BookModels.RandomNumber(0, 10000),
                 bookName = "book_" + BookModels.RandomNumber(0, 10000).ToString(),
                 price = (BookModels.RandomNumber(1, 10000) * 0.21).ToString(),
-                author = "Author"
+                author = "Author " + BookModels.RandomNumber(1, 10000).ToString()
             };
             return bookModel;
         }
-
-
-
-
         private static readonly Random random = new Random();
         private static readonly object syncLock = new object();
         public static int RandomNumber(int min, int max)

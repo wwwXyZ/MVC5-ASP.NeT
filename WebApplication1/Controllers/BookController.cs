@@ -32,15 +32,19 @@ namespace WebApplication1.Controllers
                 {
                     bookModel.author = model.author;
                     bookModel.bookName = model.bookName;
-                    var tmp = new float();
-                    float.TryParse(model.price.Replace('.', ','), out tmp);
-                    bookModel.price = tmp.ToString();
+                    bookModel.price = convertToFloat(model.price).ToString();
                     return RedirectToAction("BookList");
                 }
             }
             return View(bookList);
         }
 
+        private float convertToFloat(string str)
+        {
+            float tmp = 0;
+            float.TryParse(str.Replace('.', ','), out tmp);
+            return tmp;
+        }
 
         [HttpGet]
         public ActionResult DeleteBook(int? bookId)
